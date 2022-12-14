@@ -17,9 +17,9 @@ class WeatherReportViewModel @Inject constructor(private val repository: Weather
     val weatherReportLiveData : LiveData<Resource<WeatherReport>>
         get() = _weatherReportLiveData
 
-    fun getWeatherReport(latitude : String, longitude : String) = viewModelScope.launch {
+    fun getWeatherReport(latitude : String, longitude : String, units : String) = viewModelScope.launch {
         _weatherReportLiveData.postValue(Resource.Loading())
-        val response = repository.getWeatherReport(latitude, longitude)
+        val response = repository.getWeatherReport(latitude, longitude, units)
         if (response.isSuccessful) {
             response.body()?.let {
                 _weatherReportLiveData.postValue(Resource.Success(it))

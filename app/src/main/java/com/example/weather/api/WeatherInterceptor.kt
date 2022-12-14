@@ -36,7 +36,6 @@ class WeatherInterceptor(
             chain.proceed(request)
         } catch (e: Exception) {
 
-
             val message = when (e) {
                 is SocketTimeoutException -> {
                     "Timeout - Please check your internet connection"

@@ -56,6 +56,8 @@ object NetworkModule {
         builder.readTimeout(60, TimeUnit.SECONDS)
         builder.connectTimeout(60, TimeUnit.SECONDS)
 
+        builder.addInterceptor(WeatherInterceptor(context))
+
         if (BuildConfig.DEBUG) {
             //show logs only in debug version
             builder.addInterceptor(HttpLoggingInterceptor().apply {
@@ -63,7 +65,7 @@ object NetworkModule {
             })
         }
 
-        builder.addInterceptor(WeatherInterceptor(context))
+
 
 
         return builder.build()

@@ -8,6 +8,6 @@ class WeatherReportRepository @Inject constructor(
     /*TODO uncomment private val database: AppDatabase*/
 ) {
 
-    suspend fun getWeatherReport(latitude : String, longitude : String) = apiInterface.getWeatherReport(latitude, longitude)
+    suspend fun getWeatherReport(latitude : String, longitude : String, units : String) = apiInterface.getWeatherReport(latitude, longitude, units)
 
 }

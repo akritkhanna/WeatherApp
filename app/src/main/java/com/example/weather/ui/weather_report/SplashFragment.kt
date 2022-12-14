@@ -13,6 +13,7 @@ import com.example.weather.R
 import com.example.weather.core.BaseFragment
 import com.example.weather.databinding.FragmentSplashBinding
 import com.example.weather.utils.Constants.BUNDLE_WEATHER
+import com.example.weather.utils.Constants.UNIT_METRIC
 import com.example.weather.utils.Resource
 import com.example.weather.utils.Tools.convertToJsonString
 import com.example.weather.utils.Tools.getLastKnownLocation
@@ -71,7 +72,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
             if (it?.get(Manifest.permission.ACCESS_FINE_LOCATION) == true) {
                context?.getLastKnownLocation()?.let { location ->
-                   viewModel.getWeatherReport(location.latitude.toString(), location.longitude.toString())
+                   viewModel.getWeatherReport(location.latitude.toString(), location.longitude.toString(), UNIT_METRIC)
                }
             } else {
                 showErrorMessage("Please grant location permission.")
