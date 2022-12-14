@@ -27,13 +27,13 @@ android {
 
     productFlavors {
 
-        sampleApp {
+        weatherApp {
             applicationId "com.example.weather"
             versionCode 1
             versionName "1.0.0"
             dimension 'app'
             resValue "string", "appName", "Weathereo"
-            manifestPlaceholders = [appName: "Sample Project"]
+            manifestPlaceholders = [appName: "Weathereo"]
 
         }
 

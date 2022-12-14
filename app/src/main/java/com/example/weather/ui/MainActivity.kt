@@ -1,8 +1,12 @@
 package com.example.weather.ui
 
+import android.content.Context
 import android.location.Location
 import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.navigation.fragment.NavHostFragment
 import com.example.weather.R
 import com.example.weather.core.BaseActivity
@@ -15,7 +19,6 @@ class MainActivity : BaseActivity<MainViewModel>(), LocationListener {
 
     private var binding: ActivityMainBinding? = null
     private var navHostFragment: NavHostFragment? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

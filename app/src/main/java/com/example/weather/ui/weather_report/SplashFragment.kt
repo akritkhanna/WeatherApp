@@ -81,10 +81,16 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
     val requestLocationPermission =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+
             if (it?.get(Manifest.permission.ACCESS_FINE_LOCATION) == true) {
-               context?.getLastKnownLocation()?.let { location ->
-                   viewModel.getWeatherReport(location.latitude.toString(), location.longitude.toString(), UNIT_METRIC)
-               }
+               val location =  context?.getLastKnownLocation()
+                       if (location != null){
+                           viewModel.getWeatherReport(location.latitude.toString(), location.longitude.toString(), UNIT_METRIC)
+                       }else {
+                           showErrorMessage("Unable to get the location, try again later.")
+                       }
+
+
             } else {
                 showErrorMessage("Please grant location permission.")
             }
