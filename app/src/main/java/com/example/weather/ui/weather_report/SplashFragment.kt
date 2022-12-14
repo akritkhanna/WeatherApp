@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
@@ -25,8 +26,16 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
     private val viewModel by viewModels<WeatherReportViewModel>()
 
+    private var shouldSkip = true
+
     override fun onResume() {
         super.onResume()
+
+        if (shouldSkip){
+            Log.i(TAG, "Skipping calling the api.")
+            shouldSkip = false
+            return
+        }
 
         if (context?.let {
                 ActivityCompat.checkSelfPermission(
@@ -34,7 +43,9 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
                     Manifest.permission.ACCESS_FINE_LOCATION
                 )
             } == PackageManager.PERMISSION_GRANTED) {
-            //TODO call the api..
+            context?.getLastKnownLocation()?.let { location ->
+                viewModel.getWeatherReport(location.latitude.toString(), location.longitude.toString(), UNIT_METRIC)
+            }
         }
 
     }
@@ -51,6 +62,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
     override fun addObserver() {
         viewModel.weatherReportLiveData.observe(viewLifecycleOwner){
             if (it != null){
+
                 binding.pb.isVisible = it is Resource.Loading
                 when(it){
                     is Resource.Success -> {
@@ -69,7 +81,6 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
     val requestLocationPermission =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-
             if (it?.get(Manifest.permission.ACCESS_FINE_LOCATION) == true) {
                context?.getLastKnownLocation()?.let { location ->
                    viewModel.getWeatherReport(location.latitude.toString(), location.longitude.toString(), UNIT_METRIC)
