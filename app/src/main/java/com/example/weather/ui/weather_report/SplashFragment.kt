@@ -13,11 +13,14 @@ import androidx.fragment.app.viewModels
 import com.example.weather.R
 import com.example.weather.core.BaseFragment
 import com.example.weather.databinding.FragmentSplashBinding
+import com.example.weather.models.Main
+import com.example.weather.ui.MainActivity
 import com.example.weather.utils.Constants.BUNDLE_WEATHER
 import com.example.weather.utils.Constants.UNIT_METRIC
 import com.example.weather.utils.Resource
 import com.example.weather.utils.Tools.convertToJsonString
 import com.example.weather.utils.Tools.getLastKnownLocation
+import com.example.weather.utils.Tools.isLocationEnabled
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -26,29 +29,7 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
     private val viewModel by viewModels<WeatherReportViewModel>()
 
-    private var shouldSkip = true
 
-    override fun onResume() {
-        super.onResume()
-
-        if (shouldSkip){
-            Log.i(TAG, "Skipping calling the api.")
-            shouldSkip = false
-            return
-        }
-
-        if (context?.let {
-                ActivityCompat.checkSelfPermission(
-                    it,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            } == PackageManager.PERMISSION_GRANTED) {
-            context?.getLastKnownLocation()?.let { location ->
-                viewModel.getWeatherReport(location.latitude.toString(), location.longitude.toString(), UNIT_METRIC)
-            }
-        }
-
-    }
 
     override fun initView() {
         requestLocationPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
@@ -56,6 +37,10 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
 
     override fun initListener() {
+
+        binding.ivRetry.setOnClickListener {
+            requestLocationPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+        }
 
     }
 
@@ -65,12 +50,18 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
                 binding.pb.isVisible = it is Resource.Loading
                 when(it){
+
+                    is Resource.Loading -> {
+                        binding.ivRetry.isVisible = false
+                    }
+
                     is Resource.Success -> {
                         navigate(R.id.action_splashFragment_to_weatherReportFragment, Bundle().apply {
                             putString(BUNDLE_WEATHER, it.data?.convertToJsonString())
                         })
                     }
                     is Resource.Error -> {
+                        binding.ivRetry.isVisible = true
                         showErrorMessage(it.message)
                     }
                     else -> {}
@@ -83,15 +74,31 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
 
             if (it?.get(Manifest.permission.ACCESS_FINE_LOCATION) == true) {
+
+                //Start the location listener.
+                when(val parentActivity = activity){
+                    is MainActivity -> {
+                        parentActivity.startLocationMonitoring()
+                    }
+                }
+
+                if (context?.isLocationEnabled() == false){
+                    showErrorMessage("Please turn on location.")
+                    binding.ivRetry.isVisible = true
+                    return@registerForActivityResult
+                }
+
                val location =  context?.getLastKnownLocation()
                        if (location != null){
                            viewModel.getWeatherReport(location.latitude.toString(), location.longitude.toString(), UNIT_METRIC)
                        }else {
+                           binding.ivRetry.isVisible = true
                            showErrorMessage("Unable to get the location, try again later.")
                        }
 
 
             } else {
+                binding.ivRetry.isVisible = true
                 showErrorMessage("Please grant location permission.")
             }
 

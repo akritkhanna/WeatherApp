@@ -1,5 +1,6 @@
 package com.example.weather.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.location.LocationListener
@@ -20,11 +21,16 @@ class MainActivity : BaseActivity<MainViewModel>(), LocationListener {
     private var binding: ActivityMainBinding? = null
     private var navHostFragment: NavHostFragment? = null
 
+    private var locationManager: LocationManager? = null
+
+    private var isMonitoringLocation = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         navHostFragment = supportFragmentManager.findFragmentById(R.id.container) as NavHostFragment
 
 
@@ -41,7 +47,18 @@ class MainActivity : BaseActivity<MainViewModel>(), LocationListener {
     }
 
     override fun onDestroy() {
+        locationManager?.removeUpdates(this)
         super.onDestroy()
+
+    }
+
+    fun startLocationMonitoring() {
+        if (!isMonitoringLocation){
+            locationManager?.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER, 30000 /*3 Seconds*/, 0F, this
+            )
+            isMonitoringLocation = true
+        }
 
     }
 }

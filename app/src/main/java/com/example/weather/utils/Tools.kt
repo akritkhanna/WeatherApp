@@ -698,6 +698,11 @@ object Tools {
         return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
     }
 
+    fun Context.isLocationEnabled(): Boolean {
+        val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
 
 }
 

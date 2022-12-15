@@ -33,6 +33,20 @@
         android:visibility="gone"
         tools:visibility="visible"/>
 
+    <ImageView
+        android:id="@+id/ivRetry"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:src="@drawable/ic_refresh"
+        app:tint="?colorPrimary"
+        app:layout_constraintVertical_bias="0.55"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLogo"
+        app:layout_constraintEnd_toEndOf="@+id/ivLogo"
+        app:layout_constraintStart_toStartOf="@+id/ivLogo"
+        app:layout_constraintTop_toTopOf="@+id/ivLogo"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
     <TextView
         android:id="@+id/tvAppName"
         android:layout_width="wrap_content"

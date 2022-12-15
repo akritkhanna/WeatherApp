@@ -1,6 +1,9 @@
 package com.example.weather.ui.weather_report
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import com.example.weather.core.BaseFragment
 import com.example.weather.databinding.FragmentWeatherReportBinding
@@ -9,6 +12,7 @@ import com.example.weather.utils.Constants.BUNDLE_WEATHER
 import com.example.weather.utils.Constants.UNIT_METRIC
 import com.example.weather.utils.Resource
 import com.example.weather.utils.Tools.getLastKnownLocation
+import com.example.weather.utils.Tools.isLocationEnabled
 import com.google.android.material.color.MaterialColors
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -27,7 +31,7 @@ class WeatherReportFragment :
 
     }
 
-    private fun setWeatherReport(report : WeatherReport) {
+    private fun setWeatherReport(report: WeatherReport) {
         binding.tvTitle.text = report.name
     }
 
@@ -59,7 +63,7 @@ class WeatherReportFragment :
     override fun initListener() {
 
         binding.ivBack.setOnClickListener {
-           activity?.onBackPressed()
+            activity?.onBackPressed()
         }
 
         binding.ivSave.setOnClickListener {
@@ -67,13 +71,39 @@ class WeatherReportFragment :
         }
 
         binding.swipeContainer.setOnRefreshListener {
-            context?.getLastKnownLocation()?.let { location ->
-                viewModel.getWeatherReport(
-                    location.latitude.toString(),
-                    location.longitude.toString(),
-                    UNIT_METRIC
-                )
+            context?.let { itContext ->
+
+                if (ActivityCompat.checkSelfPermission(
+                        itContext,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) == PackageManager.PERMISSION_DENIED
+                ) {
+                    showErrorMessage("Please grant location permission.")
+                    binding.swipeContainer.isRefreshing = false
+                    return@setOnRefreshListener
+                }
+
+                if (!itContext.isLocationEnabled()) {
+                    showErrorMessage("Please turn on location.")
+                    binding.swipeContainer.isRefreshing = false
+                    return@setOnRefreshListener
+                }
+
+
             }
+
+            val location = context?.getLastKnownLocation()
+            if (location == null) {
+                showErrorMessage("Unable to get the location, try again later.")
+                binding.swipeContainer.isRefreshing = false
+                return@setOnRefreshListener
+            }
+            viewModel.getWeatherReport(
+                location.latitude.toString(),
+                location.longitude.toString(),
+                UNIT_METRIC
+            )
+
         }
     }
 
