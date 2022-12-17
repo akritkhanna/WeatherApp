@@ -203,7 +203,6 @@ object Tools {
 
     }
 
-    //TODO convert to extension function
     fun currentTimeToUtc(
         datesToConvert: String,
         numberDays: Int,

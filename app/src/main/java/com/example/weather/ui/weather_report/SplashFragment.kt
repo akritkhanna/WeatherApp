@@ -20,6 +20,7 @@ import com.example.weather.utils.Constants.UNIT_METRIC
 import com.example.weather.utils.Resource
 import com.example.weather.utils.Tools.convertToJsonString
 import com.example.weather.utils.Tools.getLastKnownLocation
+import com.example.weather.utils.Tools.isInternetAvailable
 import com.example.weather.utils.Tools.isLocationEnabled
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,9 +69,10 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
                 }
             }
         }
+
     }
 
-    val requestLocationPermission =
+    private val requestLocationPermission =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
 
             if (it?.get(Manifest.permission.ACCESS_FINE_LOCATION) == true) {
@@ -88,7 +90,11 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
                     return@registerForActivityResult
                 }
 
-               val location =  context?.getLastKnownLocation()
+                if (context?.isInternetAvailable() == false){
+                    viewModel.getLatestReport()
+                    return@registerForActivityResult
+                }
+               val location = context?.getLastKnownLocation()
                        if (location != null){
                            viewModel.getWeatherReport(location.latitude.toString(), location.longitude.toString(), UNIT_METRIC)
                        }else {

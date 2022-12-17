@@ -3,11 +3,12 @@
 
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipeContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/gradient_rectangle">
@@ -21,6 +22,7 @@
             android:src="@drawable/ic_save"
             app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
             app:layout_constraintEnd_toEndOf="parent"
+            android:tooltipText="Save Report"
             app:layout_constraintTop_toTopOf="@+id/tvTitle"
             app:tint="@color/white" />
 
@@ -67,8 +69,8 @@
                     android:id="@+id/llHigh"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:orientation="horizontal"
+                    android:tooltipText="High"
                     app:layout_constraintBottom_toTopOf="@+id/llLow"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -86,6 +88,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textColor="@color/white"
+                        android:textSize="@dimen/_14ssp"
                         tools:text="30&#xb0;" />
                 </LinearLayout>
 
@@ -95,6 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_8sdp"
                     android:orientation="horizontal"
+                    android:tooltipText="Low"
                     app:layout_constraintBottom_toTopOf="@+id/cvReport"
                     app:layout_constraintEnd_toEndOf="@id/llHigh"
                     app:layout_constraintTop_toBottomOf="@+id/llHigh">
@@ -111,7 +115,37 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textColor="@color/white"
+                        android:textSize="@dimen/_14ssp"
                         tools:text="20&#xb0;" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llHumidity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:tooltipText="Humidity"
+
+                    app:layout_constraintBottom_toBottomOf="@+id/tvWeatherType"
+                    app:layout_constraintEnd_toStartOf="@+id/llHigh"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/tvTemperature"
+                    app:layout_constraintTop_toTopOf="@+id/tvTemperature">
+
+                    <ImageView
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_35sdp"
+                        android:src="@drawable/ic_droplet"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:id="@+id/tvHumidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_18ssp"
+                        tools:text="69" />
                 </LinearLayout>
 
                 <TextView
@@ -125,6 +159,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="20&#xb0;" />
 
+
                 <TextView
                     android:id="@+id/tvWeatherType"
                     android:layout_width="wrap_content"
@@ -137,6 +172,15 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
                     tools:text="Clouds" />
 
+                <ProgressBar
+                    android:id="@+id/pbReport"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvWeatherType" />
+
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cvReport"
@@ -145,7 +189,7 @@
                     android:layout_marginTop="@dimen/_8sdp"
                     android:visibility="gone"
                     app:cardCornerRadius="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/tvWeatherType"
+                    app:layout_constraintTop_toBottomOf="@+id/pbReport"
                     tools:visibility="visible">
 
 
@@ -160,19 +204,6 @@
 
                 </androidx.cardview.widget.CardView>
 
-
-                <TextView
-                    android:id="@+id/tvNoData"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/color_e5e5e5"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvTemperature"
-                    tools:text="No record found."
-                    tools:visibility="visible" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
